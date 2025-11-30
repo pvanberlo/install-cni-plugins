@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: install-cni-plugins
+  labels:
+    app: install-cni-plugins
+spec:
+  selector:
+    matchLabels:
+      app: install-cni-plugins
+  template:
+    metadata:
+      labels:
+        app: install-cni-plugins
+    spec:
+      containers:
+      - name: install-cni-plugins
+        image: ghcr.io/pvanberlo/install-cni-plugins:latest
+        # Add the arguments for the desired plugins here.
+        # The script will install only these.
+        # If this 'args' block is removed, all plugins will be installed.
+        args:
+        - macvlan
+        volumeMounts:
+        - name: cni-bin
+          mountPath: /opt/cni/bin
+      volumes:
+      - name: cni-bin
+        hostPath:
+          path: /opt/cni/bin
